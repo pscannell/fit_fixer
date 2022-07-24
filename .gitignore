@@ -133,3 +133,5 @@ out/
 *.fit
 *.csv
 .vscode
+.direnv
+.envrc
