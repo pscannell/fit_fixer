@@ -4,14 +4,14 @@ from pathlib import Path
 import csv
 import argparse
 
-fitCSVTool = './bin/FitCSVTool.jar'
-out_path = './out/'
+fitCSVTool = str(Path(__file__).parent / 'bin/FitCSVTool.jar')
+out_path = Path(__file__).parent / 'out/'
 
 class FitFixer:
     def __init__(self, fit_file_path):
         self.fit_file_path = fit_file_path
-        self.csv_file_dest = out_path + str(Path(self.fit_file_path).stem) + '_update.csv'
-        self.fit_file_dest = out_path + str(Path(self.fit_file_path).stem) + '_update.fit'
+        self.csv_file_dest = str(out_path / Path(self.fit_file_path).stem) + '_update.csv'
+        self.fit_file_dest = str(out_path / Path(self.fit_file_path).stem) + '_update.fit'
         self.temp_csv_path = tempfile.NamedTemporaryFile(suffix='.csv', prefix=str(Path(__file__)))
 
     def _fit_to_csv(self):
