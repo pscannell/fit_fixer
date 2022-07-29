@@ -56,6 +56,8 @@ class FitFixer:
         self._clean_timestamp()
         self._csv_to_fit()
 
+        return self.fit_file_dest
+
 def parse_args():
     parser = argparse.ArgumentParser(description='Fix FIT file for Strava.')
     parser.add_argument(
