@@ -135,5 +135,5 @@ out/
 .vscode
 .direnv
 .envrc
-strava_config.json
+.strava_config.json
 strava_notes.txt

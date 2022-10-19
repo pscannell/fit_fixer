@@ -18,12 +18,15 @@ def parse_args():
     return args
 
 if __name__ == '__main__':
-    args = parse_args()
-    fit_file = str(Path(__file__).parent / args.fit_file)
-    fitFixer = FitFixer(fit_file)
-    clean_fit_file = fitFixer.run_fixer()
-    del fitFixer
+    try:
+        args = parse_args()
+        fit_file = str(Path(__file__).parent / args.fit_file)
+        fitFixer = FitFixer(fit_file)
+        clean_fit_file = fitFixer.run_fixer()
+        del fitFixer
 
-    strava = Strava()
-    strava.upload_activity(clean_fit_file)
-    del strava
+        strava = Strava()
+        strava.upload_activity(clean_fit_file)
+        del strava
+    except Exception as e:
+        print(e)

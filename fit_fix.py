@@ -2,7 +2,6 @@ from subprocess import run as sp_run
 import tempfile
 from pathlib import Path
 import csv
-import argparse
 
 fitCSVTool = str(Path(__file__).parent / 'bin/FitCSVTool.jar')
 out_path = Path(__file__).parent / 'out/'
@@ -25,6 +24,8 @@ class FitFixer:
         ]
     
         status = sp_run(fit_to_csv_cmd)
+        if status.returncode != 0:
+            raise Exception(f'Error converting {self.fit_file_path} to {self.temp_csv_path.name}... Check file paths & data integrity')
 
         return status
 
@@ -39,12 +40,15 @@ class FitFixer:
         ]
         
         status = sp_run(fit_to_csv_cmd)
+        if status.returncode != 0:
+            raise Exception(f'Error converting {self.csv_file_dest} to {self.fit_file_dest}... Check file paths & data integrity')
 
         return status
     
     def _clean_timestamp(self):
         with open(self.temp_csv_path.name, 'r') as f:
             with open(self.csv_file_dest, 'w')  as w:
+                print('Cleaning Fit data...')
                 csv_f = csv.reader(f)
                 writer = csv.writer(w)
                 for i, row in enumerate(csv_f):
@@ -58,21 +62,23 @@ class FitFixer:
 
         return self.fit_file_dest
 
-def parse_args():
-    parser = argparse.ArgumentParser(description='Fix FIT file for Strava.')
-    parser.add_argument(
-        '--fit_file', 
-        '-f', 
-        type=str,
-        help='Path to FIT file.',
-        required=True)
-
-    args = parser.parse_args()
-    return args
 
 if __name__ == '__main__':
-    args = parse_args()
-    fit_file = str(Path(__file__).parent / args.fit_file)
-    fitFixer = FitFixer(fit_file)
-    fitFixer.run_fixer()
-    del fitFixer
+    import argparse
+    try:
+        parser = argparse.ArgumentParser(description='Fix FIT file for Strava.')
+        parser.add_argument(
+            '--fit_file', 
+            '-f', 
+            type=str,
+            help='Path to FIT file.',
+            required=True)
+
+        args = parser.parse_args()
+
+        fit_file = str(Path(__file__).parent / args.fit_file)
+        fitFixer = FitFixer(fit_file)
+        fitFixer.run_fixer()
+        del fitFixer
+    except Exception as e:
+        print(e)

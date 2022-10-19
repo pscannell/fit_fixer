@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 import time
 
-config_file = './strava_config.json'
+config_file = './.strava_config.json'
 config_file_path = str(Path(__file__).parent / config_file)
 
 strava_base_url = 'https://www.strava.com/api/v3/'
@@ -73,3 +73,23 @@ class Strava:
             if res.status_code != 200:
                 raise Exception(f'Activity upload failed:\n{json.dumps(res.json(), indent=2)}')                
             print(json.dumps(res.json(), indent=2))
+
+
+if __name__ == '__main__':
+    import argparse
+    try:
+        parser = argparse.ArgumentParser(description='FIT file path for Strava upload.')
+        parser.add_argument(
+            '--fit_file', 
+            '-f', 
+            type=str,
+            help='Path to FIT file.',
+            required=True)
+
+        args = parser.parse_args()
+
+        strava = Strava()
+        strava.upload_activity(args.fit_file)
+        del strava
+    except Exception as e:
+        print(e)
